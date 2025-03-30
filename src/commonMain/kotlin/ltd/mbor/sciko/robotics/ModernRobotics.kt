@@ -1,8 +1,6 @@
 package ltd.mbor.sciko.robotics
 
-import ltd.mbor.sciko.linalg.det
-import ltd.mbor.sciko.linalg.pinv
-import ltd.mbor.sciko.linalg.svd
+import ltd.mbor.sciko.linalg.*
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.api.linalg.inv
@@ -14,14 +12,6 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.*
 import kotlin.math.*
 
-// *** BASIC HELPER FUNCTIONS ***
-
-fun MultiArray<Double, D1>.norm() = mk.linalg.norm(reshape(shape[0],1))
-
-fun MultiArray<Double, D2>.trace(): Double {
-  if (shape[0] != shape[1]) throw IllegalStateException("matrix not square")
-  return (0..<shape[0]).map{this[it, it]}.sum()
-}
 
 /**
  * Determines whether a scalar is small enough to be treated as zero

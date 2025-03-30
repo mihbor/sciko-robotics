@@ -19,7 +19,7 @@ kotlin {
         implementation("org.jetbrains.kotlinx:multik-default:0.2.3")
         implementation("org.jetbrains.kotlinx:kandy-lets-plot:0.7.0")
         implementation("com.ionspin.kotlin:bignum:0.3.10")
-        implementation("com.github.mihbor:sciko-linalg:1edefdf")
+        implementation("com.github.mihbor.sciko-linalg:sciko-linalg:202b3de45a")
       }
     }
     val commonTest by getting {
