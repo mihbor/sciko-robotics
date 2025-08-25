@@ -22,13 +22,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+fun Double.round(scale: Long = 8) = toBigDecimal().roundToDigitPositionAfterDecimalPoint(digitPosition = scale, roundingMode = RoundingMode.ROUND_HALF_CEILING).doubleValue(false)
+fun Double.roundSignificand(decimalPrecision: Long) = toBigDecimal().roundSignificand(DecimalMode(decimalPrecision = decimalPrecision, roundingMode = RoundingMode.ROUND_HALF_CEILING)).doubleValue(false)
+
+fun <D: Dimension> MultiArray<Double, D>.round(scale: Long = 8) = map { it.round(scale) }
+fun <D: Dimension> MultiArray<Double, D>.roundSignificand(decimalPrecision: Long) = map { it.roundSignificand(decimalPrecision) }
+
 class ModernRoboticsTest {
-  fun Double.round(scale: Long = 8) = toBigDecimal().roundToDigitPositionAfterDecimalPoint(digitPosition = scale, roundingMode = RoundingMode.ROUND_HALF_CEILING).doubleValue(false)
-  fun Double.roundSignificand(decimalPrecision: Long) = toBigDecimal().roundSignificand(DecimalMode(decimalPrecision = decimalPrecision, roundingMode = RoundingMode.ROUND_HALF_CEILING)).doubleValue(false)
-
-  fun <D: Dimension> MultiArray<Double, D>.round(scale: Long = 8) = map { it.round(scale) }
-  fun <D: Dimension> MultiArray<Double, D>.roundSignificand(decimalPrecision: Long) = map { it.roundSignificand(decimalPrecision) }
-
   // *** BASIC HELPER FUNCTIONS ***
 
   @Test

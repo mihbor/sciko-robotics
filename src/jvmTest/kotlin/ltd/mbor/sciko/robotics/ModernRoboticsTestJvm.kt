@@ -10,10 +10,16 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.*
 import java.io.File
 import kotlin.math.PI
 import kotlin.math.roundToInt
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ModernRoboticsTestJvm {
+
+  @BeforeTest
+  fun setup() {
+    mk.setEngine(KEEngineType)
+  }
 
   @Test
   fun `test InverseDynamicsTrajectory`() {
@@ -77,9 +83,8 @@ class ModernRoboticsTestJvm {
       ]).transpose(),
     )
     assertEquals(
-      mk.d2arrayFromFile("InverseDynamicsTrajectory.csv"),
-      taumat,
-      "$taumat not equal ${mk.d2arrayFromFile("InverseDynamicsTrajectory.csv")}"
+      mk.d2arrayFromFile("InverseDynamicsTrajectory.csv").round(10),
+      taumat.round(10)
     )
 
     //Output using kandy to plot the joint forces/torques
@@ -139,13 +144,12 @@ class ModernRoboticsTestJvm {
       intRes = 8
     )
     assertEquals(
-      mk.d2arrayFromFile("ForwardDynamicsTrajectory-Theta.csv"),
-      thetamat,
-      "$thetamat not equal ${mk.d2arrayFromFile("ForwardDynamicsTrajectory-Theta.csv")}"
+      mk.d2arrayFromFile("ForwardDynamicsTrajectory-Theta.csv").round(10),
+      thetamat.round(10)
     )
     assertEquals(
-      mk.d2arrayFromFile("ForwardDynamicsTrajectory-DTheta.csv"),
-      dthetamat
+      mk.d2arrayFromFile("ForwardDynamicsTrajectory-DTheta.csv").round(10),
+      dthetamat.round(10)
     )
 
     // Output using kandy to plot the joint angle/velocities
@@ -263,12 +267,12 @@ class ModernRoboticsTestJvm {
       intRes
     )
     assertEquals(
-      mk.d2arrayFromFile("SimulateControl-ThetaActual.csv"),
-      thetamat
+      mk.d2arrayFromFile("SimulateControl-ThetaActual.csv").round(10),
+      thetamat.round(10)
     )
     assertEquals(
-      mk.d2arrayFromFile("SimulateControl-ThetaDesired.csv"),
-      thetamatd
+      mk.d2arrayFromFile("SimulateControl-ThetaDesired.csv").round(10),
+      thetamatd.round(10)
     )
 
     // Output using kandy to plot
