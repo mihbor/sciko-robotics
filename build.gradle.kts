@@ -1,25 +1,39 @@
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
+
 plugins {
   kotlin("multiplatform") version "2.0.21"
   id("maven-publish")
 }
 
-group = "com.github.mihbor"
+group = "ltd.mbor.sciko"
 version = "0.1-SNAPSHOT"
 
 repositories {
   mavenCentral()
-  maven("https://jitpack.io")
+  maven {
+    name = "GitHubPackages"
+    url = uri("https://maven.pkg.github.com/mihbor/sciko-linalg")
+    credentials {
+      username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+      password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+    }
+  }
 }
 
 kotlin {
+  jvm()
+  jvmToolchain(21)
+  js(IR) {
+    browser()
+  }
   sourceSets {
     val commonMain by getting {
       dependencies {
         api("org.jetbrains.kotlinx:multik-core:0.2.3")
         implementation("org.jetbrains.kotlinx:multik-default:0.2.3")
-        implementation("org.jetbrains.kotlinx:kandy-lets-plot:0.7.0")
         implementation("com.ionspin.kotlin:bignum:0.3.10")
-        implementation("com.github.mihbor.sciko-linalg:sciko-linalg:202b3de45a")
+        api("ltd.mbor.sciko:sciko-linalg:0.1-SNAPSHOT")
       }
     }
     val commonTest by getting {
@@ -27,11 +41,28 @@ kotlin {
         implementation(kotlin("test"))
       }
     }
-  }
-  jvm {
-    testRuns["test"].executionTask.configure {
-      useJUnitPlatform()
+    val jvmTest by getting {
+      dependencies {
+        implementation(kotlin("test"))
+        implementation("org.jetbrains.kotlinx:kandy-lets-plot:0.7.0")
+      }
     }
   }
-  jvmToolchain(21)
+}
+
+publishing {
+  repositories {
+    maven {
+      name = "GitHubPackages"
+      url = uri("https://maven.pkg.github.com/mihbor/sciko-robotics")
+      credentials {
+        username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+        password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+      }
+    }
+  }
+}
+
+rootProject.plugins.withType(YarnPlugin::class.java) {
+  rootProject.the<YarnRootExtension>().yarnLockAutoReplace = true
 }

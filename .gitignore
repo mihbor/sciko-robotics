@@ -2,4 +2,6 @@
 /build/
 /.gradle/
 *.iml
+.kotlin
 /lets-plot-images/
+/kotlin-js-store/

@@ -4,12 +4,17 @@ import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import ltd.mbor.sciko.linalg.diagonal
-import org.jetbrains.kotlinx.kandy.dsl.plot
-import org.jetbrains.kotlinx.kandy.letsplot.export.save
-import org.jetbrains.kotlinx.kandy.letsplot.layers.line
-import org.jetbrains.kotlinx.multik.api.*
-import org.jetbrains.kotlinx.multik.ndarray.data.*
-import org.jetbrains.kotlinx.multik.ndarray.operations.*
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.ones
+import org.jetbrains.kotlinx.multik.api.zeros
+import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
+import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.data.set
+import org.jetbrains.kotlinx.multik.ndarray.operations.div
+import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 import kotlin.math.PI
 import kotlin.math.roundToInt
 import kotlin.test.Test
@@ -27,19 +32,19 @@ class ModernRoboticsTest {
   // *** BASIC HELPER FUNCTIONS ***
 
   @Test
-  fun `test NearZero`() {
+  fun testNearZero() {
     assertEquals(true, NearZero(1e-7))
   }
 
   @Test
-  fun `test Normalize`() {
+  fun testNormalize() {
     assertEquals(mk.ndarray(mk[0.26726124, 0.53452248, 0.80178373]), Normalize(mk.ndarray(mk[1.0, 2.0, 3.0])).round())
   }
 
   // *** CHAPTER 3: RIGID-BODY MOTIONS ***
 
   @Test
-  fun `test RotInv`() {
+  fun testRotInv() {
     assertEquals(
       mk.ndarray(mk[
         mk[ 0.0,  1.0,  0.0],
@@ -55,7 +60,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test VecToso3`() {
+  fun testVecToso3() {
     assertEquals(
       mk.ndarray(mk[
         mk[ 0.0, -3.0,  2.0],
@@ -67,7 +72,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test so3ToVec`() {
+  fun testso3ToVec() {
     assertEquals(
       mk.ndarray(mk[1.0, 2.0, 3.0]),
       so3ToVec(
@@ -81,7 +86,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test AxisAng3`() {
+  fun testAxisAng3() {
     assertEquals(
       mk.ndarray(mk[0.26726124, 0.53452248, 0.80178373]) to 3.7416573867739413,
       AxisAng3(mk.ndarray(mk[1.0, 2.0, 3.0])).let { it.first.round() to it.second }
@@ -89,7 +94,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test MatrixExp3`() {
+  fun testMatrixExp3() {
     assertEquals(
       mk.ndarray(mk[
         mk[-0.69492056,  0.71352099,  0.08929286],
@@ -107,7 +112,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test MatrixLog3`() {
+  fun testMatrixLog3() {
     assertEquals(
       mk.ndarray(mk[
         mk[        0.0, -1.20919958,  1.20919958],
@@ -125,7 +130,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test RpToTrans`() {
+  fun testRpToTrans() {
     assertEquals(
       mk.ndarray(mk[
         mk[1,  0,  0,  1],
@@ -145,7 +150,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test TransToRp`() {
+  fun testTransToRp() {
     assertEquals(
       mk.ndarray(mk[
         mk[1,  0,  0],
@@ -165,7 +170,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test TransInv`() {
+  fun testTransInv() {
     assertEquals(
       mk.ndarray(mk[
         mk[1,  0,  0,  0],
@@ -183,7 +188,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test VecTose3`() {
+  fun testVecTose3() {
     assertEquals(
       mk.ndarray(mk[
         mk[ 0, -3,  2,  4],
@@ -198,7 +203,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test se3ToVec`() {
+  fun testse3ToVec() {
     assertEquals(
       mk.ndarray(mk[1, 2, 3, 4, 5, 6]).map { it.toDouble() },
       se3ToVec(
@@ -213,7 +218,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test Adjoint`() {
+  fun testAdjoint() {
     assertEquals(
       mk.ndarray(mk[
         mk[1,  0,  0,  0,  0,  0],
@@ -235,7 +240,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test ScrewToAxis`() {
+  fun testScrewToAxis() {
     assertEquals(
       mk.ndarray(mk[0, 0, 1, 0, -3, 2]).map { it.toDouble() },
       ScrewToAxis(
@@ -247,7 +252,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test AxisAng6`() {
+  fun testAxisAng6() {
     assertEquals(
       mk.ndarray(mk[1.0, 0.0, 0.0, 1.0, 2.0, 3.0]) to 1.0,
       AxisAng6(mk.ndarray(mk[1, 0, 0, 1, 2, 3]).map { it.toDouble() })
@@ -255,7 +260,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test MatrixExp6`() {
+  fun testMatrixExp6() {
     assertEquals(
       mk.ndarray(mk[
         mk[1.0,  0.0,  0.0,  0.0],
@@ -273,7 +278,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test MatrixLog6`() {
+  fun testMatrixLog6() {
     assertEquals(
       mk.ndarray(mk[
         mk[0.0,  0.0,   0.0,    0.0],
@@ -291,7 +296,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test ProjectToSO3`() {
+  fun testProjectToSO3() {
     assertEquals(
       mk.ndarray(mk[
         mk[ 0.67901136,  0.14894516,  0.71885945],
@@ -307,7 +312,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test ProjectToSE3`() {
+  fun testProjectToSE3() {
     assertEquals(
       mk.ndarray(mk[
         mk[ 0.67901136,  0.14894516,  0.71885945,  1.2],
@@ -325,7 +330,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test DistanceToSO3`() {
+  fun testDistanceToSO3() {
     assertEquals(
       0.08835,
       DistanceToSO3(
@@ -339,7 +344,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test DistanceToSE3`() {
+  fun testDistanceToSE3() {
     assertEquals(
       0.134931,
       DistanceToSE3(
@@ -354,7 +359,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test TestIfSO3`() {
+  fun testTestIfSO3() {
     assertFalse(
       TestIfSO3(
         mk.ndarray(
@@ -369,7 +374,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test TestIfSE3`() {
+  fun testTestIfSE3() {
     assertFalse(
       TestIfSE3(
         mk.ndarray(mk[
@@ -385,7 +390,7 @@ class ModernRoboticsTest {
   // *** CHAPTER 4: FORWARD KINEMATICS ***
 
   @Test
-  fun `test FKinBody`() {
+  fun testFKinBody() {
     assertEquals(
       mk.ndarray(mk[
         mk[0.0,  1.0,  0.0, -5.0       ],
@@ -411,7 +416,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test FKinSpace`() {
+  fun testFKinSpace() {
     assertEquals(
       mk.ndarray(mk[
         mk[0.0,  1.0,  0.0, -5.0       ],
@@ -439,7 +444,7 @@ class ModernRoboticsTest {
   // *** CHAPTER 5: VELOCITY KINEMATICS AND STATICS***
 
   @Test
-  fun `test JacobianBody`() {
+  fun testJacobianBody() {
     assertEquals(
       mk.ndarray(mk[
         mk[-0.04528405,  0.99500417,  0.0       ,  1.0],
@@ -462,7 +467,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test JacobianSpace`() {
+  fun testJacobianSpace() {
     assertEquals(
       mk.ndarray(mk[
         mk[0.0,  0.98006658, -0.09011564,  0.95749426],
@@ -485,7 +490,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test IKinBody`() {
+  fun testIKinBody() {
     val (result, converged) = IKinBody(
       Blist = mk.ndarray(mk[
         mk[0.0,  0.0, -1.0,  2.0,  0.0,  0.0],
@@ -516,7 +521,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test IKinSpace`() {
+  fun testIKinSpace() {
     val (result, converged) = IKinSpace(
       Slist = mk.ndarray(mk[
         mk[0.0,  0.0,  1.0,  4.0,  0.0,  0.0],
@@ -549,7 +554,7 @@ class ModernRoboticsTest {
   // *** CHAPTER 8: DYNAMICS OF OPEN CHAINS ***
 
   @Test
-  fun `test ad`() {
+  fun testad() {
     assertEquals(
       mk.ndarray(mk[
         mk[ 0, -3,  2,  0,  0,  0],
@@ -564,7 +569,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test InverseDynamics`() {
+  fun testInverseDynamics() {
     assertEquals(
       mk.ndarray(mk[74.69616155, -33.06766016, -3.23057314]),
       InverseDynamics(
@@ -612,7 +617,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test MassMatrix`() {
+  fun testMassMatrix() {
     assertEquals(
       mk.ndarray(mk[
         mk[ 2.25433380e+01, -3.07146754e-01, -7.18426391e-03],
@@ -660,7 +665,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test VelQuadraticForces`() {
+  fun testVelQuadraticForces() {
     assertEquals(
       mk.ndarray(mk[0.26453118, -0.05505157, -0.00689132]),
       VelQuadraticForces(
@@ -705,7 +710,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test GravityForces`() {
+  fun testGravityForces() {
     assertEquals(
       mk.ndarray(mk[28.40331262, -37.64094817, -5.4415892]),
       GravityForces(
@@ -750,7 +755,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test EndEffectorForces`() {
+  fun testEndEffectorForces() {
     assertEquals(
       mk.ndarray(mk[1.40954608, 1.85771497, 1.392409]),
       EndEffectorForces(
@@ -795,7 +800,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test ForwardDynamics`() {
+  fun testForwardDynamics() {
     assertEquals(
       mk.ndarray(mk[-0.97392907, 25.58466784, -32.91499212]),
       ForwardDynamics(
@@ -843,7 +848,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test EulerStep`() {
+  fun testEulerStep() {
     assertEquals(
       mk.ndarray(mk[0.11, 0.12, 0.13]) to mk.ndarray(mk[0.3, 0.35, 0.4]),
       EulerStep(
@@ -856,7 +861,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test InverseDynamicsTrajectory`() {
+  fun testInverseDynamicsTrajectory() {
 
     // Create a trajectory to follow using functions from Chapter 9
     val thetastart = mk.ndarray(mk[0, 0, 0]).map{ it.toDouble() }
@@ -916,18 +921,19 @@ class ModernRoboticsTest {
         mk[0.0,  1.0,  0.0, -0.089,  0.0,  0.425]
       ]).transpose(),
     )
-    assertEquals(
-      mk.d2arrayFromFile("InverseDynamicsTrajectory.csv"),
-      taumat
-    )
-
-    //Output using kandy to plot the joint forces/torques
-    val timestamps = mk.linspace<Double>(0.0, Tf, N).toList()
-    plotNVector("InverseDynamicsTrajectory", timestamps, taumat.toListD2() to "Tau")
+// Only implemented for jvm target
+//    assertEquals(
+//      mk.d2arrayFromFile("InverseDynamicsTrajectory.csv"),
+//      taumat
+//    )
+//
+//    //Output using kandy to plot the joint forces/torques
+//    val timestamps = mk.linspace<Double>(0.0, Tf, N).toList()
+//    plotNVector("InverseDynamicsTrajectory", timestamps, taumat.toListD2() to "Tau")
   }
 
   @Test
-  fun `test ForwardDynamicsTrajectory`() {
+  fun testForwardDynamicsTrajectory() {
     val (thetamat, dthetamat) = ForwardDynamicsTrajectory(
       thetalist = mk.ndarray(mk[0.1, 0.1, 0.1]),
       dthetalist = mk.ndarray(mk[0.1, 0.2, 0.3]),
@@ -977,26 +983,27 @@ class ModernRoboticsTest {
       dt = 0.1,
       intRes = 8
     )
-    assertEquals(
-      mk.d2arrayFromFile("ForwardDynamicsTrajectory-Theta.csv"),
-      thetamat
-    )
-    assertEquals(
-      mk.d2arrayFromFile("ForwardDynamicsTrajectory-DTheta.csv"),
-      dthetamat
-    )
-
-    // Output using kandy to plot the joint angle/velocities
-    val N = 10
-    val Tf = 10 * 0.1
-    val timestamps = mk.linspace<Double>(0.0, Tf, N).toList()
-    plotNVector("ForwardDynamicsTrajectory", timestamps, thetamat.toListD2() to "Theta", dthetamat.toListD2() to "DTheta")
+// Only implemented for jvm target
+//    assertEquals(
+//      mk.d2arrayFromFile("ForwardDynamicsTrajectory-Theta.csv"),
+//      thetamat
+//    )
+//    assertEquals(
+//      mk.d2arrayFromFile("ForwardDynamicsTrajectory-DTheta.csv"),
+//      dthetamat
+//    )
+//
+//    // Output using kandy to plot the joint angle/velocities
+//    val N = 10
+//    val Tf = 10 * 0.1
+//    val timestamps = mk.linspace<Double>(0.0, Tf, N).toList()
+//    plotNVector("ForwardDynamicsTrajectory", timestamps, thetamat.toListD2() to "Theta", dthetamat.toListD2() to "DTheta")
   }
 
   // *** CHAPTER 9: TRAJECTORY GENERATION ***
 
   @Test
-  fun `test CubicTimeScaling`() {
+  fun testCubicTimeScaling() {
     assertEquals(
       0.216,
       CubicTimeScaling(Tf = 2.0, t = 0.6).round()
@@ -1004,7 +1011,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test QuinticTimeScaling`() {
+  fun testQuinticTimeScaling() {
     assertEquals(
       0.16308,
       QuinticTimeScaling(Tf = 2.0, t = 0.6).round()
@@ -1012,7 +1019,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test JointTrajectory`() {
+  fun testJointTrajectory() {
     assertEquals(
       mk.ndarray(mk[
         mk[1.0   , 0.0  , 0.0   , 1.0   , 1.0  , 0.2   , 0.0   , 1.0],
@@ -1033,7 +1040,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test ScrewTrajectory`() {
+  fun testScrewTrajectory() {
     assertEquals(
       listOf(
         mk.ndarray(mk[
@@ -1082,7 +1089,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test CartesianTrajectory`() {
+  fun testCartesianTrajectory() {
     assertEquals(
       listOf(
         mk.ndarray(mk[
@@ -1131,7 +1138,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test ComputedTorque`() {
+  fun testComputedTorque() {
     assertEquals(
       mk.ndarray(mk[133.00525246, -29.94223324, -3.03276856]),
       ComputedTorque(
@@ -1184,7 +1191,7 @@ class ModernRoboticsTest {
   }
 
   @Test
-  fun `test SimulateControl`() {
+  fun testSimulateControl() {
     val thetalist = mk.ndarray(mk[0.1, 0.1, 0.1])
     val dthetalist = mk.ndarray(mk[0.1, 0.2, 0.3])
     // Initialize robot description (Example with 3 links)
@@ -1290,42 +1297,18 @@ class ModernRoboticsTest {
       dt,
       intRes
     )
-    assertEquals(
-      mk.d2arrayFromFile("SimulateControl-ThetaActual.csv"),
-      thetamat
-    )
-    assertEquals(
-      mk.d2arrayFromFile("SimulateControl-ThetaDesired.csv"),
-      thetamatd
-    )
-
-    // Output using kandy to plot
-    val timestamps = mk.linspace<Double>(0.0, Tf, N).toList()
-    plotNVector("SimulateControl", timestamps, thetamat.toListD2() to "Actual Theta", thetamatd.toListD2() to "Desired Theta")
+// Only implemented for jvm target
+//    assertEquals(
+//      mk.d2arrayFromFile("SimulateControl-ThetaActual.csv"),
+//      thetamat
+//    )
+//    assertEquals(
+//      mk.d2arrayFromFile("SimulateControl-ThetaDesired.csv"),
+//      thetamatd
+//    )
+//
+//    // Output using kandy to plot
+//    val timestamps = mk.linspace<Double>(0.0, Tf, N).toList()
+//    plotNVector("SimulateControl", timestamps, thetamat.toListD2() to "Actual Theta", thetamatd.toListD2() to "Desired Theta")
   }
 }
-
-fun plotNVector(name: String, timestamps: List<Double>, vararg histories: Pair<List<List<Double>>, String>) {
-  val n = histories.sumOf{ it.first.first().size }
-  val map = mapOf(
-    "t" to (1..n).flatMap { timestamps },
-    "values" to histories.flatMap { history -> (0..<history.first.first().size).flatMap { i -> history.first.map { it[i] } }},
-    "labels" to histories.flatMap { history -> (1..history.first.first().size).flatMap { i -> timestamps.map { "${history.second}$i" } }}
-  )
-  map.plot {
-    line {
-      x("t")
-      y("values")
-      color("labels")
-    }
-  }.save("${name}Plot.png")
-}
-
-fun Multik.d2arrayFromFile(filename: String): D2Array<Double> {
-  return mk.ndarray(checkNotNull(this::class.java.classLoader.getResource(filename)).readText().split("\n").map { it.split(",").map { it.toDouble() } })
-}
-
-//fun MultiArray<Double, D2>.toFile(filename: String) {
-//  val csv = toListD2().map{ it.joinToString(",") }.joinToString("\n")
-//  File(filename).writeText(csv)
-//}
