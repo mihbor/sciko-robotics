@@ -78,7 +78,8 @@ class ModernRoboticsTestJvm {
     )
     assertEquals(
       mk.d2arrayFromFile("InverseDynamicsTrajectory.csv"),
-      taumat
+      taumat,
+      "$taumat not equal ${mk.d2arrayFromFile("InverseDynamicsTrajectory.csv")}"
     )
 
     //Output using kandy to plot the joint forces/torques
@@ -139,7 +140,8 @@ class ModernRoboticsTestJvm {
     )
     assertEquals(
       mk.d2arrayFromFile("ForwardDynamicsTrajectory-Theta.csv"),
-      thetamat
+      thetamat,
+      "$thetamat not equal ${mk.d2arrayFromFile("ForwardDynamicsTrajectory-Theta.csv")}"
     )
     assertEquals(
       mk.d2arrayFromFile("ForwardDynamicsTrajectory-DTheta.csv"),
