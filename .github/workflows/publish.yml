@@ -10,6 +10,8 @@ on:
 permissions:
   contents: read
   packages: write
+  checks: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -33,6 +35,25 @@ jobs:
       env:
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Upload test reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-reports
+        path: |
+          build/reports/tests/
+          build/test-results/
+        retention-days: 30
+    
+    - name: Publish test results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Test Results
+        path: 'build/test-results/**/TEST-*.xml'
+        reporter: java-junit
+        fail-on-error: false
       
     - name: Publish to GitHub Packages
       run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
