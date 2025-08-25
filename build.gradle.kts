@@ -2,7 +2,9 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
 plugins {
-  kotlin("multiplatform") version "2.0.21"
+  kotlin("multiplatform") version "2.2.10"
+  id("com.android.library") version "8.11.1"
+  id("org.jetbrains.kotlin.android") version "2.2.10" apply false
   id("maven-publish")
 }
 
@@ -11,6 +13,7 @@ version = "0.1-SNAPSHOT"
 
 repositories {
   mavenCentral()
+  google()
   maven {
     name = "GitHubPackages"
     url = uri("https://maven.pkg.github.com/mihbor/sciko-linalg")
@@ -27,6 +30,7 @@ kotlin {
   js(IR) {
     browser()
   }
+  androidTarget()
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -47,6 +51,18 @@ kotlin {
         implementation("org.jetbrains.kotlinx:kandy-lets-plot:0.7.0")
       }
     }
+  }
+}
+
+android {
+  compileSdk = 36
+  namespace = "ltd.mbor.sciko.robotics"
+  defaultConfig {
+    minSdk = 21
+  }
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
   }
 }
 
