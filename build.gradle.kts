@@ -30,7 +30,9 @@ kotlin {
   js(IR) {
     browser()
   }
-  androidTarget()
+  androidTarget {
+    publishLibraryVariants("release", "debug")
+  }
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -48,7 +50,7 @@ kotlin {
     val jvmTest by getting {
       dependencies {
         implementation(kotlin("test"))
-        implementation("org.jetbrains.kotlinx:kandy-lets-plot:0.7.0")
+        implementation("org.jetbrains.kotlinx:kandy-lets-plot:0.8.0")
       }
     }
   }
